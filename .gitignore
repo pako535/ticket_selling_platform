@@ -1,0 +1,5 @@
+
+\.idea/
+\venv/
+
+ticets/ticets/__pycache__/
