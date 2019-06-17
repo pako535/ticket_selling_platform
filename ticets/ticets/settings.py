@@ -37,7 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ticket_system',
+    'rest_framework'
 ]
+
+REST_FRAMEWORK = {
+
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
