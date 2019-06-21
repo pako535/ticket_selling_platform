@@ -9,3 +9,7 @@ ticets/ticket_system/migrations/__pycache__/
 ticets/ticket_system/api/__pycache__/
 
 ticets/ticket_system/__pycache__/
+
+ticets/ticket_system/services/__pycache__/
+
+ticets/ticket_system/tests/__pycache__/
