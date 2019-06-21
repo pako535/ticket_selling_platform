@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from enum import Enum
 
@@ -5,15 +6,21 @@ from enum import Enum
 # Create your models here.
 
 class TypeTickets(Enum):
-    STUDENT = 1
-    NORMAL = 2
-    PREMIUM = 3
-    VIP = 4
+    STUDENT = 'STUDENT'
+    NORMAL = 'NORMAL'
+    PREMIUM = 'PREMIUM'
+    VIP = 'VIP'
+
+
+class States(Enum):
+    RESERVED = 'RESERVED'
+    PAID = 'PAID'
+    CANCELED = 'CANCELED'
 
 
 class Ticket(models.Model):
     price = models.FloatField(verbose_name='Price')
-    type_ticket = models.CharField(max_length=7, choices=((x.name, x.name) for x in TypeTickets))
+    type_ticket = models.CharField(max_length=7, choices=((x.name, x) for x in TypeTickets))
     
     def __str__(self):
         return str(self.type_ticket) + " | " + str(self.price)
@@ -53,7 +60,10 @@ class Reservation(models.Model):
     
     type_ticket = models.CharField(max_length=7, choices=((x.name, x.name) for x in TypeTickets))
     ticket = models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, related_name='ticket',
-                               verbose_name='ticket')
+                               verbose_name='ticketit')
+    
+    state = models.CharField(max_length=7, default=States.RESERVED.name,
+                             choices=((x.name, x) for x in States))
     
     def __str__(self):
         return "{} {} | {} | {}".format(
@@ -62,3 +72,10 @@ class Reservation(models.Model):
             self.ticket,
             self.event
         )
+    
+    def _update_reservation(self):
+        time_difference = (datetime.datetime.now() - self.date_and_time_of_reservation
+                           .replace(tzinfo=None)) \
+                              .total_seconds() / 60.0
+        if time_difference >= 15 and self.state == States.RESERVED:
+            self.state = States.CANCELED
